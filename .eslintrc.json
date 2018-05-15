@@ -31,7 +31,7 @@
       "error",
       "always"
     ],
-    "no-console": "warn",
+    "no-console": "off",
     "object-curly-spacing": [
       "warn",
       "always"

@@ -21,8 +21,9 @@ function logger(req, res, next) {
 
 function register(username, password) {
   const id = usersDB.get('num').value() + 1;
-  usersDB.get('users').push({ id, username, password }).write();
-  usersDB.update('num', n => n + 1).write();
+  usersDB.get('users').push({ id, username, password });
+  usersDB.update('num', n => n + 1);
+  usersDB.write();
   return jwt.sign({ id, username, password }, JWT_SECRET);
 }
 
@@ -60,23 +61,32 @@ function handleQuizzesRequest(req, res) {
   const quiz = quizzesDB.get('questions').filter({ location }).value();
 
   if (quiz == null) {
-    return res.send({ error: `quiz location=${location} was not found.` });
+    return res.send({ error: 'quiz not found.' });
   } else {
     return res.send(quiz);
   }
 }
 
 function handleQuizzesSubmit(req, res) {
-  const quizId = Number(req.params.id);
+  const { id } = req.user.user;
+  const { questionId, answer } = req.body;
 
-  console.log(`Request for quizId=${quizId}`);
-  res.send({
-    id: 5,
-    questions: [
-      'question1',
-      'question2',
-    ],
-  });
+  const entryObj = { userId: id, questionId: Number(questionId) };
+  const answerObj = { answer: Number(answer) };
+  const answerData = { ...entryObj, ...answerObj };
+  console.log(answerData);
+
+  const oldAnswer = answersDB.get('answers').find(entryObj).value();
+  console.log(oldAnswer);
+
+  if (oldAnswer) {
+    answersDB.get('answers').find(entryObj).assign(answerObj).write();
+  } else {
+    answersDB.get('answers').push(answerData).write();
+  }
+
+  //TODO: send results? or nothing
+  return res.send({ results: 'all wrong lul' });
 }
 
 module.exports = {

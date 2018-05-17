@@ -8,7 +8,7 @@ const answersDB = low(new FileSync('db/answers.json'));
 
 const JWT_SECRET = process.env.SECRET || 'BANANAS';
 
-usersDB.defaults({ num: 0, users: [] }).write();
+usersDB.defaults({ users: [] }).write();
 quizzesDB.defaults({ questions: [], answers: [] }).write();
 answersDB.defaults({ answers: [] }).write();
 
@@ -20,19 +20,21 @@ function logger(req, res, next) {
 }
 
 function register(username, password) {
-  const id = usersDB.get('num').value() + 1;
-  usersDB.get('users').push({ id, username, password });
-  usersDB.update('num', n => n + 1);
-  usersDB.write();
-  return jwt.sign({ id, username, password }, JWT_SECRET);
+  const id = Date.now();
+  const userData = { id, username, password };
+  usersDB.get('users').push(userData).write();
+  return jwt.sign(userData, JWT_SECRET);
 }
 
 // ===== API Handlers
 
 function handleLoginSubmit(req, res) {
-  const { username, password } = req.body;
+  let { username, password } = req.body;
   if (!username || !password) {
     return res.send({ error: 'send username and password pls' });
+  } else {
+    username = username.trim();
+    password = password.trim();
   }
 
   const user = usersDB.get('users').find({ username }).value();

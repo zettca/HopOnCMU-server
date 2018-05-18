@@ -27,7 +27,7 @@ app.get('/quizzes', handlers.handleQuizzesRequest);
 app.post('/quizzes', handlers.handleQuizzesSubmit);
 
 
-const PORT = 8080;
+const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}...\n`);
 });

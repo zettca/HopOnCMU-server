@@ -98,12 +98,16 @@ function handleQuizzesRequest(req, res) {
     return res.send({ error: 'send quiz location pls' });
   }
 
-  const quiz = quizzesDB.get('questions').filter({ location }).value();
+  const loc = quizzesDB.get('locations').find({ id: location }).value();
+  const quiz = quizzesDB.get('questions');
 
-  if (quiz == null) {
+  const questions = loc.questions.map(id => quiz.find({ id }).value());
+  console.log(loc.questions);
+
+  if (questions == null) {
     return res.send({ error: 'quiz not found.' });
   } else {
-    return res.send(quiz);
+    return res.send(questions);
   }
 }
 

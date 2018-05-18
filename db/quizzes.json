@@ -1,0 +1,64 @@
+{
+  "locations": [
+    {
+      "id": "M14",
+      "name": "Gun Museum",
+      "questions": [
+        1,
+        2,
+        7
+      ]
+    },
+    {
+      "id": "M42",
+      "name": "Another Museum",
+      "questions": [
+        3,
+        7
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "id": 1,
+      "question": "How many bananas are there?",
+      "answer": 2,
+      "options": [
+        "about 10",
+        "exactly 42",
+        "over 9000"
+      ]
+    },
+    {
+      "id": 2,
+      "question": "The anwer is True¿?",
+      "answer": 0,
+      "options": [
+        "True",
+        "False",
+        "Through",
+        "Falafel"
+      ]
+    },
+    {
+      "id": 3,
+      "question": "Is this monument gr8?",
+      "answer": 3,
+      "options": [
+        "Yes",
+        "Very",
+        "Indeed",
+        "Bananas"
+      ]
+    },
+    {
+      "id": 7,
+      "question": "Is this a question?",
+      "answer": 0,
+      "options": [
+        "Yes",
+        "No"
+      ]
+    }
+  ]
+}

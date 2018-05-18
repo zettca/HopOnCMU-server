@@ -9,7 +9,7 @@ const answersDB = low(new FileSync('db/answers.json'));
 const JWT_SECRET = process.env.SECRET || 'BANANAS';
 
 usersDB.defaults({ users: [] }).write();
-quizzesDB.defaults({ questions: [], answers: [] }).write();
+quizzesDB.defaults({ locations: [], questions: [] }).write();
 answersDB.defaults({ answers: [] }).write();
 
 // ===== HELPERS
@@ -26,6 +26,11 @@ function register(username, password) {
   return jwt.sign(userData, JWT_SECRET);
 }
 
+function userIdToName(id) {
+  const user = usersDB.get('users').find({ id }).value();
+  return user.username;
+}
+
 // ===== API Handlers
 
 function handleLoginSubmit(req, res) {
@@ -34,7 +39,7 @@ function handleLoginSubmit(req, res) {
     return res.send({ error: 'send username and password pls' });
   } else {
     username = username.trim();
-    password = password.trim();
+    password = password.trim().replace(/ /g, '+');
   }
 
   const user = usersDB.get('users').find({ username }).value();
@@ -52,6 +57,39 @@ function handleLoginSubmit(req, res) {
     console.log(`Fail login attempt by ${username}:${password}`);
     return res.send({ error: 'wrong password' });
   }
+}
+
+function handleLocationsRequest(req, res) {
+  const locations = quizzesDB.get('locations').value();
+  const locData = locations.map(loc => ({ name: loc.name, numQuestions: loc.questions.length }));
+  console.log(locData);
+
+  res.send(locData);
+}
+
+function handleRankingRequest(req, res) {
+  const users = usersDB.get('users');
+  const questions = quizzesDB.get('questions');
+  const answers = answersDB.value();
+  const ranking = {}
+
+  answers.forEach(ans => {
+    const { answer } = questions.find({ id: ans.questionId }).value();
+    const username = userIdToName(ans.userId);
+
+    if (ranking[username] === undefined) {
+      ranking[username] = 0;
+    }
+
+    if (answer == ans.answer) {
+      ranking[username] += 10;
+    }
+  });
+
+  console.log('Sending ranking...');
+  console.log(ranking);
+
+  res.send(ranking);
 }
 
 function handleQuizzesRequest(req, res) {
@@ -94,6 +132,8 @@ function handleQuizzesSubmit(req, res) {
 module.exports = {
   logger,
   handleLoginSubmit,
+  handleLocationsRequest,
+  handleRankingRequest,
   handleQuizzesRequest,
   handleQuizzesSubmit,
 };

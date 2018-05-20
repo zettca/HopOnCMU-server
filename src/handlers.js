@@ -10,7 +10,7 @@ const JWT_SECRET = process.env.SECRET || 'BANANAS';
 
 usersDB.defaults({ users: [] }).write();
 quizzesDB.defaults({ locations: [], questions: [] }).write();
-answersDB.defaults({ answers: [] }).write();
+answersDB.defaults([]).write();
 
 // ===== HELPERS
 
@@ -120,13 +120,15 @@ function handleQuizzesSubmit(req, res) {
   const answerData = { ...entryObj, ...answerObj };
   console.log(answerData);
 
-  const oldAnswer = answersDB.get('answers').find(entryObj).value();
+  const oldAnswer = answersDB.find(entryObj).value();
   console.log(oldAnswer);
 
   if (oldAnswer) {
-    answersDB.get('answers').find(entryObj).assign(answerObj).write();
+    answersDB.find(entryObj).assign(answerObj).write();
   } else {
-    answersDB.get('answers').push(answerData).write();
+    answersDB.push(answerData).write();
+    console.log("pushed");
+    console.log(answerData);
   }
 
   //TODO: send results? or nothing

@@ -2,7 +2,7 @@
   "locations": [
     {
       "id": "M14",
-      "name": "Gun Museum",
+      "name": "paco",
       "questions": [
         1,
         2,
@@ -10,8 +10,8 @@
       ]
     },
     {
-      "id": "M42",
-      "name": "Another Museum",
+      "id": "eduroam",
+      "name": "belem",
       "questions": [
         3,
         7

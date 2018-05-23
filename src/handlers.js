@@ -121,14 +121,11 @@ function handleQuizzesSubmit(req, res) {
   console.log(answerData);
 
   const oldAnswer = answersDB.find(entryObj).value();
-  console.log(oldAnswer);
 
-  if (oldAnswer) {
-    answersDB.find(entryObj).assign(answerObj).write();
-  } else {
+  if (oldAnswer === undefined) {
     answersDB.push(answerData).write();
-    console.log("pushed");
-    console.log(answerData);
+  } else {
+    answersDB.find(entryObj).assign(answerObj).write();
   }
 
   //TODO: send results? or nothing

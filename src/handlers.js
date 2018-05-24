@@ -93,7 +93,7 @@ function handleRankingRequest(req, res) {
 }
 
 function handleQuizzesRequest(req, res) {
-  const { location } = req.query;
+  const location = req.query.location.replace(/"/g, '');
   if (!location) {
     return res.send({ error: 'send quiz location pls' });
   }
